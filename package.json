@@ -1,0 +1,24 @@
+{
+  "name": "fluent-builder",
+  "version": "1.0.0",
+  "description": "A fluent builder for typescript objects",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/develohpanda/fluent-builder.git"
+  },
+  "keywords": [
+    "typescript",
+    "javascript",
+    "fluent"
+  ],
+  "author": "Opender Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/develohpanda/fluent-builder/issues"
+  },
+  "homepage": "https://github.com/develohpanda/fluent-builder#readme"
+}
