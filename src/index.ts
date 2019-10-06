@@ -32,7 +32,7 @@ export class FluentBuilder<T extends object> {
   private readonly initial: T;
   private internalInstance: T;
 
-  constructor(initial: BuilderProxyType<T>) {
+  public constructor(initial: BuilderProxyType<T>) {
     this.initial = unproxify<T>(initial);
     this.internalInstance = unproxify<T>(initial);
     this.mutator = {} as any;
