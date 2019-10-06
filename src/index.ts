@@ -1,13 +1,27 @@
 import {cloneDeep} from 'lodash';
-import { IsOptional} from 'prop-types';
+import {IsOptional} from 'prop-types';
 
 type OptionalType<T> = IsOptional<T> extends true ? T | undefined | null : T;
 
-type InitialType<T> = {
-  [K in keyof T]: OptionalType<T[K]>
-}
+export type BuilderProxyType<T> = {
+  [K in keyof T]-?: OptionalType<T[K]>;
+};
 
-type MutatorFunction<T, K extends keyof T> = IsOptional<T[K]> extends true ? (value?: T[K]) => Mutator<T> : (value: T[K]) => Mutator<T>;
+const unproxify = <T>(obj: BuilderProxyType<T>): T => {
+  const result: T = {} as any;
+
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      result[key] = cloneDeep(obj[key] as T[typeof key]);
+    }
+  }
+
+  return result;
+};
+
+type MutatorFunction<T, K extends keyof T> = IsOptional<T[K]> extends true
+  ? (value?: T[K]) => Mutator<T>
+  : (value: T[K]) => Mutator<T>;
 
 type Mutator<T> = {
   [K in keyof T]-?: MutatorFunction<T, K>;
@@ -15,20 +29,22 @@ type Mutator<T> = {
 
 export class FluentBuilder<T extends object> {
   private readonly mutator: Mutator<T>;
-  private readonly initial: InitialType<T>;
-  private internalInstance: InitialType<T>;
+  private readonly initial: T;
+  private internalInstance: T;
 
-  constructor(initial: InitialType<T>) {
-    this.initial = initial;
-    this.internalInstance = initial;
+  constructor(initial: BuilderProxyType<T>) {
+    this.initial = unproxify<T>(initial);
+    this.internalInstance = unproxify<T>(initial);
     this.mutator = {} as any;
 
     for (const key in this.initial) {
-      this.mutator[key] = ((v: OptionalType<T[typeof key]> ) => {
-        this.internalInstance[key] = v;
-        
-        return this.mutator;
-      }) as MutatorFunction<T, typeof key>;
+      if (this.initial.hasOwnProperty(key)) {
+        this.mutator[key] = ((v: T[typeof key]) => {
+          this.internalInstance[key] = v;
+
+          return this.mutator;
+        }) as MutatorFunction<T, typeof key>;
+      }
     }
   }
 
@@ -38,15 +54,7 @@ export class FluentBuilder<T extends object> {
     return this.instance();
   };
 
-  public instance = (): T => {
-    let result = {} as T;
-
-    for (const key in this.internalInstance) {
-      result[key] = this.internalInstance[key] as T[typeof key];
-    }
-
-    return result;
-  };
+  public instance = (): T => cloneDeep(this.internalInstance);
 
   public reset = (): T => {
     this.internalInstance = cloneDeep(this.initial);
@@ -60,4 +68,9 @@ interface Product {
   description?: number;
 }
 
-new FluentBuilder<Product>({title:1,description:2}).mutate(set => set.description().title())
+const initialObj: BuilderProxyType<Product> = {
+  title: 1,
+  description: null,
+};
+
+new FluentBuilder<Product>(initialObj).mutate(set => set.description().title());
