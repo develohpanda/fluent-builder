@@ -1,11 +1,11 @@
-import {BuilderProxyType, FluentBuilder} from './index';
+import {FluentBuilder, OptionalToNullType} from './index';
 
 interface Numbers {
   req: number;
   opt?: number;
 }
 
-const initialObj: BuilderProxyType<Numbers> = {
+const initialObj: OptionalToNullType<Numbers> = {
   req: 1,
   opt: null,
 };

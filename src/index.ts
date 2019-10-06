@@ -1,13 +1,13 @@
 import {cloneDeep} from 'lodash';
 import {IsOptional} from 'prop-types';
 
-type OptionalType<T> = IsOptional<T> extends true ? T | undefined | null : T;
+type OptionalType<T> = IsOptional<T> extends true ? T | null : T;
 
-export type BuilderProxyType<T> = {
+export type OptionalToNullType<T> = {
   [K in keyof T]-?: OptionalType<T[K]>;
 };
 
-const unproxify = <T>(obj: BuilderProxyType<T>): T => {
+const unproxify = <T>(obj: OptionalToNullType<T>): T => {
   const result: T = {} as any;
 
   for (const key in obj) {
@@ -32,7 +32,7 @@ export class FluentBuilder<T extends object> {
   private readonly initial: T;
   private internalInstance: T;
 
-  public constructor(initial: BuilderProxyType<T>) {
+  public constructor(initial: OptionalToNullType<T>) {
     this.initial = unproxify<T>(initial);
     this.internalInstance = unproxify<T>(initial);
     this.mutator = {} as any;

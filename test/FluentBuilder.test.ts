@@ -1,4 +1,4 @@
-import {BuilderProxyType, FluentBuilder} from '../src/index';
+import {FluentBuilder, OptionalToNullType} from '../src/index';
 
 interface Product {
   str: string;
@@ -9,9 +9,9 @@ interface Product {
   callbackOpt?(): number;
 }
 
-const defaultProduct: BuilderProxyType<Product> = {
+const defaultProduct: OptionalToNullType<Product> = {
   str: 'orgTitle',
-  strOpt: undefined,
+  strOpt: null,
   num: 1,
   numOpt: null,
   callback: jest.fn(),
@@ -28,7 +28,7 @@ describe('FluentBuilder', () => {
   it('should mutate then reset', () => {
     const original = builder.instance();
     const mutated = builder.mutate(set => {
-      set.str();
+      set.str('test');
     });
     const reset = builder.reset();
 

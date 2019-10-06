@@ -13,7 +13,7 @@
   "scripts": {
     "test": "jest",
     "compile": "tsc",
-    "lint": "eslint {src,__tests__}/**/* --ext .{{t,j}s{,x}}",
+    "lint": "eslint {src,test}/**/* --ext .{{t,j}s{,x}}",
     "lint:fix": "yarn lint --fix",
     "local-pack": "rimraf ./*.tgz && yarn lint && yarn compile && yarn pack"
   },
