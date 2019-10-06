@@ -12,13 +12,10 @@
   ],
   "scripts": {
     "test": "jest",
-    "test:cover": "jest --coverage",
-    "start": "start-storybook -p 6006",
     "compile": "tsc",
-    "lint": "eslint {.storybook,stories,src,__tests__}/**/* --ext .{{t,j}s{,x}}",
+    "lint": "eslint {src,__tests__}/**/* --ext .{{t,j}s{,x}}",
     "lint:fix": "yarn lint --fix",
-    "local-pack": "rimraf ./*.tgz && yarn lint && yarn compile && yarn pack",
-    "now-build": "build-storybook -o dist"
+    "local-pack": "rimraf ./*.tgz && yarn lint && yarn compile && yarn pack"
   },
   "lint-staged": {
     "*.{{t,j}s{,x}}": [

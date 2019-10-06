@@ -1,13 +1,13 @@
 import {BuilderProxyType, FluentBuilder} from './index';
 
-interface Product {
-  title: number;
-  description?: number;
+interface Numbers {
+  req: number;
+  opt?: number;
 }
 
-const initialObj: BuilderProxyType<Product> = {
-  title: 1,
-  description: null,
+const initialObj: BuilderProxyType<Numbers> = {
+  req: 1,
+  opt: null,
 };
 
-new FluentBuilder<Product>(initialObj).mutate(set => set.description().title());
+new FluentBuilder<Numbers>(initialObj).mutate(set => set.opt().req(2));
