@@ -1,40 +1,52 @@
 import {cloneDeep} from 'lodash';
 import { IsOptional} from 'prop-types';
 
-type InitialType<T, P extends keyof T> = IsOptional<T[P]> extends true ? T[P] | undefined | null : T[P];
+type OptionalType<T> = IsOptional<T> extends true ? T | undefined | null : T;
 
-type MutatorFunction<T, P extends keyof T> = IsOptional<T[P]> extends true ? (value?: T[P]) => With<T> : (value: T[P]) => With<T>;
+type InitialType<T> = {
+  [K in keyof T]: OptionalType<T[K]>
+}
 
-type With<T> = {
-  [P in keyof T]-?: MutatorFunction<T, P>;
+type MutatorFunction<T, K extends keyof T> = IsOptional<T[K]> extends true ? (value?: T[K]) => Mutator<T> : (value: T[K]) => Mutator<T>;
+
+type Mutator<T> = {
+  [K in keyof T]-?: MutatorFunction<T, K>;
 };
 
 export class FluentBuilder<T extends object> {
-  private readonly set: With<T>;
-  private readonly initial: T;
-  private internalInstance: T;
+  private readonly mutator: Mutator<T>;
+  private readonly initial: InitialType<T>;
+  private internalInstance: InitialType<T>;
 
-  constructor(initial: T) {
+  constructor(initial: InitialType<T>) {
     this.initial = initial;
     this.internalInstance = initial;
-    this.set = {} as any;
+    this.mutator = {} as any;
 
     for (const key in this.initial) {
-      this.set[key] = ((v: T[typeof key] ) => {
+      this.mutator[key] = ((v: OptionalType<T[typeof key]> ) => {
         this.internalInstance[key] = v;
         
-        return this.set;
+        return this.mutator;
       }) as MutatorFunction<T, typeof key>;
     }
   }
 
-  public mutate = (func: (set: With<T>) => void): T => {
-    func(this.set);
+  public mutate = (func: (mutate: Mutator<T>) => void): T => {
+    func(this.mutator);
 
     return this.instance();
   };
 
-  public instance = (): T => cloneDeep(this.internalInstance);
+  public instance = (): T => {
+    let result = {} as T;
+
+    for (const key in this.internalInstance) {
+      result[key] = this.internalInstance[key] as T[typeof key];
+    }
+
+    return result;
+  };
 
   public reset = (): T => {
     this.internalInstance = cloneDeep(this.initial);
@@ -48,4 +60,4 @@ interface Product {
   description?: number;
 }
 
-new FluentBuilder<Product>({title:1,description:2}).mutate(set => set.title(2).description())
+new FluentBuilder<Product>({title:1,description:2}).mutate(set => set.description().title())
