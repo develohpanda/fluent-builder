@@ -154,4 +154,4 @@ workflows:
             branches:
               ignore: /.*/
           requires:
-            - compile
+            - build
