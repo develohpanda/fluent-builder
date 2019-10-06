@@ -1,24 +1,39 @@
 {
   "name": "fluent-builder",
-  "version": "1.0.0",
-  "description": "A fluent builder for typescript objects",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/develohpanda/fluent-builder.git"
-  },
-  "keywords": [
-    "typescript",
-    "javascript",
-    "fluent"
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "module": "dist/fluent-builder.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
   ],
-  "author": "Opender Singh",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/develohpanda/fluent-builder/issues"
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint"
   },
-  "homepage": "https://github.com/develohpanda/fluent-builder#readme"
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.141",
+    "@types/prop-types": "^15.7.3",
+    "husky": "^3.0.8",
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "tsdx": "^0.9.3",
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.3"
+  }
 }
