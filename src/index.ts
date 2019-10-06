@@ -1,4 +1,4 @@
-import {cloneDeep} from 'lodash';
+import cloneDeep from 'lodash.clonedeep';
 import {IsOptional} from 'prop-types';
 
 type OptionalType<T> = IsOptional<T> extends true ? T | null : T;
