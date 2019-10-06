@@ -1,0 +1,41 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "project": "./tsconfig.json",
+      "tsconfigRootDir": "."
+    },
+    "env": {
+      "jest/globals": true
+    },
+    "plugins": ["@typescript-eslint", "jest", "prettier", "simple-import-sort"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier/@typescript-eslint",
+      "plugin:prettier/recommended",
+      "plugin:import/typescript",
+      "plugin:import/errors",
+      "plugin:import/warnings"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/array-type": ["warn", "generic"],
+      "react/prop-types": "off",
+      "import/prefer-default-export": "off",
+      "no-undef":"off",
+      "no-unused-expressions": [
+        "warn",
+        {
+          "allowShortCircuit": true,
+          "allowTernary": true
+        }
+      ],
+      "simple-import-sort/sort": "error",
+      "sort-imports": "off",
+      "import/order": "off"
+    },
+  }

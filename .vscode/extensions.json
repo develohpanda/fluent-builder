@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "pmneo.tsimporter",
+      "coenraads.bracket-pair-colorizer",
+    ]
+  }
