@@ -28,7 +28,7 @@ describe('FluentBuilder', () => {
   it('should mutate then reset', () => {
     const original = builder.instance();
     const mutated = builder.mutate(set => {
-      set.str('asdf');
+      set.str();
     });
     const reset = builder.reset();
 

@@ -62,15 +62,3 @@ export class FluentBuilder<T extends object> {
     return this.instance();
   };
 }
-
-interface Product {
-  title: number;
-  description?: number;
-}
-
-const initialObj: BuilderProxyType<Product> = {
-  title: 1,
-  description: null,
-};
-
-new FluentBuilder<Product>(initialObj).mutate(set => set.description().title());
