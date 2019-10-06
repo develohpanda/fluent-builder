@@ -1,4 +1,4 @@
-import {FluentBuilder, BuilderProxyType} from '../src/index';
+import {BuilderProxyType, FluentBuilder} from '../src/index';
 
 interface Product {
   str: string;
@@ -15,7 +15,7 @@ const defaultProduct: BuilderProxyType<Product> = {
   num: 1,
   numOpt: null,
   callback: jest.fn(),
-  callbackOpt: jest.fn()
+  callbackOpt: jest.fn(),
 };
 
 const builder = new FluentBuilder<Product>(defaultProduct);
@@ -28,11 +28,11 @@ describe('FluentBuilder', () => {
   it('should mutate then reset', () => {
     const original = builder.instance();
     const mutated = builder.mutate(set => {
-      set.;
+      set.str('asdf');
     });
     const reset = builder.reset();
 
-    // tslint:disable-next-line: no-console
+    // eslint-disable-next-line no-console
     console.log(`
         Original: ${JSON.stringify(original)}
         Mutated : ${JSON.stringify(mutated)}
