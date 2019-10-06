@@ -1,20 +1,20 @@
 {
-    "compilerOptions": {
-      "outDir": "dist",
-      "module": "commonjs",
-      "target": "es5",
-      "lib": ["es5", "dom"],
-      "sourceMap": true,
-      "allowJs": false,
-      "moduleResolution": "node",
-      "forceConsistentCasingInFileNames": true,
-      "noImplicitAny": true,
-      "strictNullChecks": true,
-      "noUnusedLocals": true,
-      "declaration": true,
-      "allowSyntheticDefaultImports": true,
-      "esModuleInterop": true
-    },
-    "include": ["src", "test"],
-    "exclude": ["node_modules", "dist", "jest.config.js"]
-  }
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es5"],
+    "sourceMap": true,
+    "allowJs": false,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "jest.config.js"]
+}
