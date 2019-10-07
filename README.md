@@ -34,34 +34,38 @@ Usage in a unit test:
 
 ```ts
 interface Product {
-    name: string;
-    quantity: number;
-    color?: string;
-    price?: number;
+  name: string;
+  quantity: number;
+  color?: string;
+  price?: number;
 }
 
 const defaultProduct: OptionalToNullType<Product> = {
-    name: 'Shirt',
-    quantity: 2,
-    color: 'red';
-    price: null;
-}
+  name: 'Shirt',
+  quantity: 2,
+  color: 'red',
+  price: null,
+};
 
 const builder = new FluentBuilder<Product>(defaultProduct);
 
 describe('suite', () => {
-    
-    beforeEach(() => builder.reset());
+  beforeEach(() => builder.reset());
 
-    it('test', () => {
-        const instance = builder
-            .mutate(set => 
-                set.quantity(4).color().price(12))
-            .instance();
-        
-        // use instance in test
-    })
-})
+  it('test', () => {
+    const instance = builder
+      .mutate(set =>
+        set
+          .quantity(4)
+          .color()
+          .price(12)
+      )
+      .instance();
+
+    // use instance in test
+  });
+});
+
 ```
 
 ### Gotcha!
