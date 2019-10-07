@@ -1,12 +1,11 @@
-# fluent-builder
-
+# fluent-builder 
 [![npm version](https://badge.fury.io/js/fluent-builder.svg)](https://badge.fury.io/js/fluent-builder) [![CircleCI](https://circleci.com/gh/develohpanda/fluent-builder.svg?style=svg)](https://circleci.com/gh/develohpanda/fluent-builder)
 
-A typed, fluent builder for creating objects in Typescript.
+### Generate a fluent, typed builder for any interface or type.
 
-This library implements the [builder pattern](https://sourcemaking.com/design_patterns/builder) for Typescript, using generics. One use of this pattern in Typescript is for generating hydrated props to use in unit tests. `fluent-builder` generates a fluent, typed builder for any interface/type.
+The basis of this library is to simplify the use of the [builder pattern](https://sourcemaking.com/design_patterns/builder) for Typescript, using generics. This pattern allows for simplified construction of complex, often nested objects. Typically, a unique builder class needs to be implemented for each unique interface or type, to ensure correct typing is available.
 
-Typically, a unique builder class needs to be implemented for each unique interface or type, to ensure correct typing is available. `fluent-builder` takes a seed object, and generates a `mutator` with an identical signature to the type being built. This `mutator` allows you to change particular properties.
+`fluent-builder` takes a seed object, and generates a `mutator` with an identical signature to the type being built. This `mutator` allows you to change particular properties.
 
 ## Installation
 
