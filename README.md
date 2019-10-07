@@ -1,5 +1,5 @@
 # fluent-builder 
-[![npm version](https://badge.fury.io/js/fluent-builder.svg)](https://badge.fury.io/js/fluent-builder) [![CircleCI](https://circleci.com/gh/develohpanda/fluent-builder.svg?style=svg)](https://circleci.com/gh/develohpanda/fluent-builder)
+[![npm version](https://badge.fury.io/js/%40develohpanda%2Ffluent-builder.svg)](https://badge.fury.io/js/%40develohpanda%2Ffluent-builder) [![CircleCI](https://circleci.com/gh/develohpanda/fluent-builder.svg?style=svg)](https://circleci.com/gh/develohpanda/fluent-builder)
 
 ### Generate a fluent, typed builder for any interface or type.
 
