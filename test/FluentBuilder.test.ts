@@ -1,42 +1,114 @@
 import {FluentBuilder, OptionalToNullType} from '../src/index';
 
-interface Product {
-  str: string;
-  strOpt?: string;
+interface First {
+  str?: string;
   num: number;
   numOpt?: number;
-  callback(): number;
-  callbackOpt?(): number;
+  second: Second;
+  arr: Array<Second>;
 }
 
-const defaultProduct: OptionalToNullType<Product> = {
-  str: 'orgTitle',
-  strOpt: null,
-  num: 1,
+interface Second {
+  num: number;
+  numOpt?: number;
+}
+
+const getDefaultFirst = (): OptionalToNullType<First> => ({
+  str: 'str',
+  num: 2,
   numOpt: null,
-  callback: jest.fn(),
-  callbackOpt: jest.fn(),
-};
+  second: {
+    num: 3,
+  },
+  arr: [],
+});
 
-const builder = new FluentBuilder<Product>(defaultProduct);
+describe('FluentBuilder - Initial Object', () => {
+  it('should match initial and instance', () => {
+    const defaultFirst = getDefaultFirst();
+    const builder = new FluentBuilder<First>(defaultFirst);
+    const instance = builder.instance();
 
-describe('FluentBuilder', () => {
-  beforeEach(() => {
-    builder.reset();
+    expect(instance).toEqual(defaultFirst);
   });
 
-  it('should mutate then reset', () => {
-    const original = builder.instance();
-    const mutated = builder.mutate(set => {
-      set.str('test');
+  it('should not update builder instance if input object is updated', () => {
+    const defaultFirst = getDefaultFirst();
+    const builder = new FluentBuilder<First>(defaultFirst);
+    const before = builder.instance();
+
+    defaultFirst.second.num = 3;
+    defaultFirst.arr.push({num: 4});
+
+    const after = builder.instance();
+
+    expect(before).toEqual(after);
+  });
+
+  it('should not update builder instance if input array item is updated', () => {
+    const defaultFirst = getDefaultFirst();
+    const obj: Second = {num: 2};
+    defaultFirst.arr.push(obj);
+
+    const builder = new FluentBuilder<First>(defaultFirst);
+    const before = builder.instance();
+
+    obj.num = 3;
+
+    const after = builder.instance();
+
+    expect(before.arr).toEqual(after.arr);
+  });
+});
+
+describe('FluentBuilder - Reset', () => {
+  it('should reset back to initial', () => {
+    const defaultFirst = getDefaultFirst();
+    const builder = new FluentBuilder<First>(defaultFirst);
+
+    const instance = builder
+      .mutate(set => set.numOpt(5).str('test'))
+      .instance();
+
+    expect(instance).not.toEqual(defaultFirst);
+
+    const resetInstance = builder.reset().instance();
+
+    expect(resetInstance).toEqual(defaultFirst);
+  });
+});
+
+describe('FluentBuilder - Mutator', () => {
+  it('should define all mutator properties', () => {
+    const defaultFirst = getDefaultFirst();
+    const builder = new FluentBuilder<First>(defaultFirst);
+
+    builder.mutate(set => {
+      for (const key in set) {
+        expect((set as any)[key]).toBeDefined();
+      }
     });
-    const reset = builder.reset();
-
-    // eslint-disable-next-line no-console
-    console.log(`
-        Original: ${JSON.stringify(original)}
-        Mutated : ${JSON.stringify(mutated)}
-        Reset   : ${JSON.stringify(reset)}
-    `);
   });
+
+  it('should mutate instance when calling corresponding mutator function', () => {
+    const defaultFirst = getDefaultFirst();
+    const builder = new FluentBuilder<First>(defaultFirst);
+
+    const str = 'test';
+    const instance = builder.mutate(set => set.str(str)).instance();
+
+    expect(instance.str).toEqual(str);
+  });
+
+  it.each([null, undefined, 1])(
+    'should should allow optional parameter in mutator function: %o',
+    (input: any) => {
+      const defaultFirst = getDefaultFirst();
+      const builder = new FluentBuilder<First>(defaultFirst);
+
+      const instance = builder.mutate(set => set.numOpt(input)).instance();
+
+      expect(instance.numOpt).toEqual(input);
+    }
+  );
 });

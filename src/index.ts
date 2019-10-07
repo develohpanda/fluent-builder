@@ -20,7 +20,7 @@ const unproxify = <T>(obj: OptionalToNullType<T>): T => {
 };
 
 type MutatorFunction<T, K extends keyof T> = IsOptional<T[K]> extends true
-  ? (value?: T[K]) => Mutator<T>
+  ? (value?: T[K] | null) => Mutator<T>
   : (value: T[K]) => Mutator<T>;
 
 type Mutator<T> = {
