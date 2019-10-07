@@ -48,17 +48,17 @@ export class FluentBuilder<T extends object> {
     }
   }
 
-  public mutate = (func: (mutate: Mutator<T>) => void): T => {
+  public mutate = (func: (mutate: Mutator<T>) => void): FluentBuilder<T> => {
     func(this.mutator);
 
-    return this.instance();
+    return this;
+  };
+
+  public reset = (): FluentBuilder<T> => {
+    this.internalInstance = cloneDeep(this.initial);
+
+    return this;
   };
 
   public instance = (): T => cloneDeep(this.internalInstance);
-
-  public reset = (): T => {
-    this.internalInstance = cloneDeep(this.initial);
-
-    return this.instance();
-  };
 }
