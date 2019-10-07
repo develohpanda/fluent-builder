@@ -5,7 +5,7 @@
 
 The basis of this library is to simplify the use of the [builder pattern](https://sourcemaking.com/design_patterns/builder) for Typescript, using generics. This pattern allows for simplified construction of complex, often nested objects. Typically, a unique builder class needs to be implemented for each unique interface or type, to ensure correct typing is available.
 
-`fluent-builder` takes a seed object, and generates a `mutator` with an identical signature to the type being built. This `mutator` allows you to change particular properties.
+`fluent-builder` takes a seed object, and generates a `mutator` with an identical signature to the type being built, but as functions. This `mutator` allows you to change particular properties.
 
 ## Installation
 
