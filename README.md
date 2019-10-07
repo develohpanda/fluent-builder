@@ -8,6 +8,10 @@ This library implements the [builder pattern](https://sourcemaking.com/design_pa
 
 Typically, a unique builder class needs to be implemented for each unique interface or type, to ensure correct typing is available. `fluent-builder` takes a seed object, and generates a `mutator` with an identical signature to the type being built. This `mutator` allows you to change particular properties.
 
+## Installation
+
+`yarn add fluent-builder` or `npm i fluent-builder`
+
 ## Usage
 
 This library has two exports:
