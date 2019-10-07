@@ -9,7 +9,7 @@ The basis of this library is to simplify the use of the [builder pattern](https:
 
 ## Installation
 
-`yarn add fluent-builder` or `npm i fluent-builder`
+`yarn add -D @develohpanda/fluent-builder` or `npm i --save-dev @develohpanda/fluent-builder`
 
 ## Usage
 
