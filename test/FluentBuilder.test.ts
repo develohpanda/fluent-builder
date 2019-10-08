@@ -1,87 +1,118 @@
-import {FluentBuilder, OptionalToNullType} from '../src/index';
+import {createBuilder, init, Schema} from '../src/index';
 
 interface First {
   str?: string;
   num: number;
   numOpt?: number;
-  second: Second;
-  arr: Array<Second>;
+  obj: Second;
+  arr: Array<number>;
+  func: () => void;
 }
 
 interface Second {
-  num: number;
-  numOpt?: number;
+  val: number;
+  valOpt?: number;
 }
 
-const getDefaultFirst = (): OptionalToNullType<First> => ({
-  str: 'str',
-  num: 2,
-  numOpt: null,
-  second: {
-    num: 3,
-  },
-  arr: [],
-});
+const str = 'str';
+const num = 2;
+const numOpt = undefined;
+const obj: Second = {
+  val: 3,
+  valOpt: undefined,
+};
+const arr: Array<number> = [1];
+const func = jest.fn();
 
-describe('FluentBuilder - Initial Object', () => {
-  it('should match initial and instance', () => {
-    const defaultFirst = getDefaultFirst();
-    const builder = new FluentBuilder<First>(defaultFirst);
-    const instance = builder.instance();
+const expectedInitial: First = {
+  str,
+  num,
+  numOpt,
+  obj,
+  arr,
+  func,
+};
 
-    expect(instance).toEqual(defaultFirst);
+const schema: Schema<First> = {
+  str: init(str),
+  num: init(num),
+  numOpt: init(numOpt),
+  obj: init(obj),
+  arr: init(arr),
+  func: init(func),
+};
+
+describe('FluentBuilder', () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it('should create initial instance from schema', () => {
+    const instance = createBuilder(schema).instance();
+
+    expect(instance).toEqual(expectedInitial);
   });
 
-  it('should not update builder instance if input object is updated', () => {
-    const defaultFirst = getDefaultFirst();
-    const builder = new FluentBuilder<First>(defaultFirst);
+  it('should track complex properties by reference from schema initializer to instance', () => {
+    const builder = createBuilder(schema);
     const before = builder.instance();
 
-    defaultFirst.second.num = 3;
-    defaultFirst.arr.push({num: 4});
+    expect(before.arr).toEqual(arr);
+    expect(before.obj).toEqual(obj);
+
+    arr.push(3);
+    obj.valOpt = 2;
 
     const after = builder.instance();
 
-    expect(before).toEqual(after);
+    expect(after.arr).toEqual(arr);
+    expect(after.obj).toEqual(obj);
   });
 
-  it('should not update builder instance if input array item is updated', () => {
-    const defaultFirst = getDefaultFirst();
-    const obj: Second = {num: 2};
-    defaultFirst.arr.push(obj);
+  it('should track jest function calls on the instance', () => {
+    const instance = createBuilder(schema).instance();
 
-    const builder = new FluentBuilder<First>(defaultFirst);
-    const before = builder.instance();
+    expect(instance.func).not.toHaveBeenCalled();
 
-    obj.num = 3;
+    instance.func();
 
-    const after = builder.instance();
-
-    expect(before.arr).toEqual(after.arr);
+    expect(instance.func).toHaveBeenCalled();
   });
-});
 
-describe('FluentBuilder - Reset', () => {
+  it('should track jest function calls between instances', () => {
+    const builder = createBuilder(schema);
+    expect(builder.instance().func).not.toHaveBeenCalled();
+    builder.instance().func();
+    expect(builder.instance().func).toHaveBeenCalled();
+  });
+
+  it('should track mutated function calls', () => {
+    const mutatedFunc = jest.fn();
+
+    const instance = createBuilder(schema)
+      .mutate(s => s.func(mutatedFunc))
+      .instance();
+
+    expect(instance.func).not.toHaveBeenCalled();
+    mutatedFunc();
+    expect(instance.func).toHaveBeenCalled();
+    expect(func).not.toHaveBeenCalled();
+  });
+
   it('should reset back to initial', () => {
-    const defaultFirst = getDefaultFirst();
-    const builder = new FluentBuilder<First>(defaultFirst);
+    const builder = createBuilder(schema);
 
     const instance = builder
       .mutate(set => set.numOpt(5).str('test'))
       .instance();
 
-    expect(instance).not.toEqual(defaultFirst);
+    expect(instance).not.toEqual(expectedInitial);
 
     const resetInstance = builder.reset().instance();
 
-    expect(resetInstance).toEqual(defaultFirst);
+    expect(resetInstance).toEqual(expectedInitial);
   });
-});
 
-describe('FluentBuilder - Mutator', () => {
   it('should define all mutator properties', () => {
-    const defaultFirst = getDefaultFirst();
-    const builder = new FluentBuilder<First>(defaultFirst);
+    const builder = createBuilder(schema);
 
     builder.mutate(set => {
       for (const key in set) {
@@ -91,8 +122,7 @@ describe('FluentBuilder - Mutator', () => {
   });
 
   it('should mutate instance when calling corresponding mutator function', () => {
-    const defaultFirst = getDefaultFirst();
-    const builder = new FluentBuilder<First>(defaultFirst);
+    const builder = createBuilder(schema);
 
     const str = 'test';
     const instance = builder.mutate(set => set.str(str)).instance();
@@ -103,8 +133,7 @@ describe('FluentBuilder - Mutator', () => {
   it.each([null, undefined, 1])(
     'should should allow optional parameter in mutator function: %o',
     (input: any) => {
-      const defaultFirst = getDefaultFirst();
-      const builder = new FluentBuilder<First>(defaultFirst);
+      const builder = createBuilder(schema);
 
       const instance = builder.mutate(set => set.numOpt(input)).instance();
 
