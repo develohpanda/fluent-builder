@@ -76,7 +76,7 @@ describe('suite', () => {
 
 ### Gotcha!
 
-In order for types to be detected correctly in VS Code (eg. on hover, intellisence), any file using `fluent-builder` should be included in the default project `tsconfig` to be compiled. If you know how to fix this, please submit a PR! :)
+In order for types to be detected correctly in VS Code (eg. IntelliSense on hover), any file using `fluent-builder` should be included in the default project `tsconfig` to be compiled. If you know how to fix this, please submit a PR! :)
 
 ## Contributing
 
