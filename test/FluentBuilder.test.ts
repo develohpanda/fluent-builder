@@ -67,7 +67,7 @@ describe('FluentBuilder', () => {
     expect(after.obj).toEqual(obj);
   });
 
-  it('should track jest function calls on the instance', () => {
+  it('can track jest function calls on the instance', () => {
     const instance = createBuilder(schema).instance();
 
     expect(instance.func).not.toHaveBeenCalled();
@@ -77,14 +77,14 @@ describe('FluentBuilder', () => {
     expect(instance.func).toHaveBeenCalled();
   });
 
-  it('should track jest function calls between instances', () => {
+  it('can track jest function calls between instances', () => {
     const builder = createBuilder(schema);
     expect(builder.instance().func).not.toHaveBeenCalled();
     builder.instance().func();
     expect(builder.instance().func).toHaveBeenCalled();
   });
 
-  it('should track mutated function calls', () => {
+  it('can track mutated function calls', () => {
     const mutatedFunc = jest.fn();
 
     const instance = createBuilder(schema)
@@ -97,7 +97,7 @@ describe('FluentBuilder', () => {
     expect(func).not.toHaveBeenCalled();
   });
 
-  it('should reset back to initial', () => {
+  it('can reset back to initial', () => {
     const builder = createBuilder(schema);
 
     const instance = builder
@@ -121,6 +121,17 @@ describe('FluentBuilder', () => {
     });
   });
 
+  it('can mutate an optional property that was initialized as undefined', () => {
+    const builder = createBuilder(schema);
+
+    expect(builder.instance().numOpt).toBeUndefined();
+
+    const update = 1;
+    builder.mutate(set => set.numOpt(update));
+
+    expect(builder.instance().numOpt).toEqual(update);
+  });
+
   it('should mutate instance when calling corresponding mutator function', () => {
     const builder = createBuilder(schema);
 
@@ -131,7 +142,7 @@ describe('FluentBuilder', () => {
   });
 
   it.each([null, undefined, 1])(
-    'should should allow optional parameter in mutator function: %o',
+    'should allow optional parameter in mutator function: %o',
     (input: any) => {
       const builder = createBuilder(schema);
 
