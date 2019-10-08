@@ -5,6 +5,10 @@
 
 `fluent-builder` consumes a seeding schema, and generates a `mutator` with a signature identical to the type being built, but with `mutate` functions, to make iterative modifications to your object.
 
+```ts
+createBuilder<Person>(schema).mutate(set => set.name('Bob').age(42)).instance();
+```
+
 ## Why?
 
 `fluent-builder` aims to simplify the use of the [builder pattern](https://sourcemaking.com/design_patterns/builder) for Typescript, using generics. This pattern allows for iterative construction of complex, often nested objects. Typically, a unique builder class needs to be implemented for each unique interface or type, to ensure correct typing is available.
