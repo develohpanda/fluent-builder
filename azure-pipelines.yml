@@ -1,9 +1,6 @@
 trigger:
   - master
 
-variables:
-  packageName: '@develohpanda/fluent-builder'
-
 stages:
 - stage: Build
   jobs:
@@ -67,20 +64,13 @@ stages:
     - deployment: Publish
       displayName: Publish
       environment: 'npm'
+      dependsOn: 'Build'
+      variables: { packageName: '@develohpanda/fluent-builder' }
       strategy:
         runOnce:
           deploy:
             steps:
-            - bash: |
-              "newVersion=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')
-              currentVersion=$(npm show $(packageName) version)
-              
-              echo \"##vso[task.setvariable variable=version;]$newVersion\"
-              echo \"##vso[task.setvariable variable=currentVersion;]$currentVersion\"
-              
-              echo \"Package name: $(packageName)\"
-              echo \"Current: $currentVersion\"
-              echo \"New: $newVersion\""
-              workingDirectory: '$(System.DefaultWorkingDirectory)/_MyFoodBag.myfoodbag.$(packageName)/drop'
+            - bash: 'checkVersionNumber.sh'
+              workingDirectory: '$(System.DefaultWorkingDirectory)'
               failOnStderr: true
               displayName: 'Pull package version'
