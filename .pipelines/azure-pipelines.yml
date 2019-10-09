@@ -12,7 +12,7 @@ pr:
 stages:
 - stage: Build
   jobs:
-    - job: Install
+    - job: Compile
       steps:
         - checkout: self
           clean: true
@@ -24,12 +24,9 @@ stages:
         - script: yarn install
           displayName: 'Install packages'
 
-    - job: Lint
-      steps:
         - script: yarn lint
+          displayName: 'Lint'
     
-    - job: Test
-      steps:
         - script: yarn test:ci
           displayName: 'Run unit tests'
 
@@ -47,8 +44,6 @@ stages:
             summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
             failIfCoverageEmpty: true
 
-    - job: Compile
-      steps:
         - script: yarn compile
           displayName: 'Compile'
 
