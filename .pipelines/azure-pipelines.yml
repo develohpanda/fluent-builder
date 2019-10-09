@@ -73,7 +73,6 @@ stages:
       displayName: 'Publish'
       environment: 'npm'
       dependsOn: 'Compile'
-      condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
       variables: {packageName: '@develohpanda/fluent-builder'}
       strategy:
         runOnce:
