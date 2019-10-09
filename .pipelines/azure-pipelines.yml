@@ -60,6 +60,12 @@ stages:
 
         - task: CopyFiles@2
           inputs:
+            SourceFolder: 'dist/.pipelines'
+            Contents: '**'
+            TargetFolder: 'artifact/.pipelines'
+
+        - task: CopyFiles@2
+          inputs:
             SourceFolder: 'artifact'
             Contents: '**'
             TargetFolder: '$(Build.ArtifactStagingDirectory)'
@@ -79,7 +85,7 @@ stages:
           deploy:
             steps:
             - bash: '.pipelines/pullPackageVersion.sh'
-              workingDirectory: '$(System.DefaultWorkingDirectory)'
+              workingDir: '$(System.DefaultWorkingDirectory)/_develohpanda.$(packageName)/drop'
               failOnStderr: true
               displayName: 'Pull package version'
               
