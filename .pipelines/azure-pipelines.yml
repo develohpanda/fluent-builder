@@ -10,9 +10,9 @@ pr:
       - '*'
 
 stages:
-- stage: Build
+- stage: Install
   jobs:
-    - job: Build
+    - job: InstallJob
       steps:
         - checkout: self
           clean: true
@@ -24,12 +24,14 @@ stages:
         - script: yarn install
           displayName: 'Install packages'
 
+- stage: Test
+  jobs:
+    - job: Lint
+      steps:
         - script: yarn lint
-          displayName: 'Lint'
-
-        - script: yarn compile
-          displayName: 'Compile'
-
+    
+    - job: Test
+      steps:
         - script: yarn test:ci
           displayName: 'Run unit tests'
 
@@ -46,6 +48,13 @@ stages:
             codeCoverageTool: 'Cobertura'
             summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
             failIfCoverageEmpty: true
+
+- stage: Build
+  jobs:
+    - job: BuildJob
+      steps:
+        - script: yarn compile
+          displayName: 'Compile'
 
         - task: CopyFiles@2
           inputs:
@@ -69,11 +78,15 @@ stages:
             artifactName: 'drop'
             targetPath: '$(Build.ArtifactStagingDirectory)'
 
+- stage: Publish
+  dependsOn: ['Install', 'Test', 'Build']
+  variables:
+    packageName: '@develohpanda/fluent-builder'
+  jobs:
     - deployment: Publish
       displayName: Publish
       environment: 'npm'
       dependsOn: 'Build'
-      variables: { packageName: '@develohpanda/fluent-builder' }
       strategy:
         runOnce:
           deploy:
