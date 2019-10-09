@@ -73,7 +73,7 @@ stages:
         runOnce:
           deploy:
             steps:
-            - bash: 'pipelines/pullPackageVersion.sh'
+            - bash: 'chmod +x pipelines/pullPackageVersion.sh'
               failOnStderr: true
               workingDirectory: '$(Pipeline.Workspace)'
               displayName: 'Pull package version'
