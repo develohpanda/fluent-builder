@@ -75,13 +75,14 @@ stages:
             steps:
             - bash: 'pipelines/pullPackageVersion.sh'
               failOnStderr: true
+              workingDir: '$(System.DefaultWorkingDirectory)/pipelines'
               displayName: 'Pull package version'
               
             - task: Npm@1
               displayName: 'npm publish'
               inputs:
                 command: publish
-                workingDir: 'npm'
+                workingDir: '$(System.DefaultWorkingDirectory)/npm'
                 verbose: false
                 publishEndpoint: 'npm@develohpanda'
               condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
