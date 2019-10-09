@@ -17,11 +17,14 @@ steps:
   - script: yarn install
     displayName: 'Install packages'
 
-  - script: yarn build
-    displayName: 'Lint & compile'
+  - script: yarn lint
+    displayName: 'Lint'
+
+  - script: yarn compile
+    displayName: 'Compile'
 
   - script: yarn test:ci
-    displayName: 'Unit tests'
+    displayName: 'Run unit tests'
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
