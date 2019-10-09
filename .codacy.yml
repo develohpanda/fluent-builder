@@ -1,0 +1,6 @@
+exclude_paths:
+  - '.pipelines/**/*'
+  - '.vscode/**/*'
+  - 'test/**/*'
+  - '*.min.js'
+  - '**/tests/**' 
