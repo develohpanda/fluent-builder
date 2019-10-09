@@ -10,9 +10,9 @@ pr:
       - '*'
 
 stages:
-- stage: Install
+- stage: Build
   jobs:
-    - job: InstallJob
+    - job: Install
       steps:
         - checkout: self
           clean: true
@@ -24,8 +24,6 @@ stages:
         - script: yarn install
           displayName: 'Install packages'
 
-- stage: Test
-  jobs:
     - job: Lint
       steps:
         - script: yarn lint
@@ -49,9 +47,7 @@ stages:
             summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
             failIfCoverageEmpty: true
 
-- stage: Build
-  jobs:
-    - job: BuildJob
+    - job: Compile
       steps:
         - script: yarn compile
           displayName: 'Compile'
@@ -78,15 +74,12 @@ stages:
             artifactName: 'drop'
             targetPath: '$(Build.ArtifactStagingDirectory)'
 
-- stage: Publish
-  dependsOn: ['Install', 'Test', 'Build']
-  condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
-  variables:
-    packageName: '@develohpanda/fluent-builder'
-  jobs:
     - deployment: Publish
-      displayName: Publish
+      displayName: 'Publish'
       environment: 'npm'
+      dependsOn: 'Compile'
+      condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
+      variables: {packageName: '@develohpanda/fluent-builder'}
       strategy:
         runOnce:
           deploy:
