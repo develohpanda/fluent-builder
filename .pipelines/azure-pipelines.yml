@@ -1,0 +1,76 @@
+trigger:
+  - master
+
+stages:
+- stage: Build
+  jobs:
+    - job: Build
+      steps:
+        - checkout: self
+          clean: true
+
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '8.11.1'
+
+        - script: yarn install
+          displayName: 'Install packages'
+
+        - script: yarn lint
+          displayName: 'Lint'
+
+        - script: yarn compile
+          displayName: 'Compile'
+
+        - script: yarn test:ci
+          displayName: 'Run unit tests'
+
+        - task: PublishTestResults@2
+          condition: succeededOrFailed()
+          inputs:
+            testResultsFormat: 'JUnit'
+            testResultsFiles: '**/junit.xml'
+            failTaskOnFailedTests: true
+
+        - task: PublishCodeCoverageResults@1
+          condition: succeededOrFailed()
+          inputs:
+            codeCoverageTool: 'Cobertura'
+            summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+            failIfCoverageEmpty: true
+
+        - task: CopyFiles@2
+          inputs:
+            Contents: 'package.json'
+            TargetFolder: 'artifact'
+
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: 'dist/src'
+            Contents: '**'
+            TargetFolder: 'artifact/src'
+
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: 'artifact'
+            Contents: '**'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+        - task: PublishPipelineArtifact@0
+          inputs:
+            artifactName: 'drop'
+            targetPath: '$(Build.ArtifactStagingDirectory)'
+
+    - deployment: Publish
+      displayName: Publish
+      environment: 'npm'
+      dependsOn: 'Build'
+      variables: { packageName: '@develohpanda/fluent-builder' }
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - bash: './.pipelines/pullPackageVersion.sh'
+              workingDirectory: '$(System.DefaultWorkingDirectory)'
+              failOnStderr: true
+              displayName: 'Pull package version'
