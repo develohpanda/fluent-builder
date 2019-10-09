@@ -89,7 +89,7 @@ stages:
                 command: publish
                 workingDir: '$(System.DefaultWorkingDirectory)/_develohpanda.$(packageName)/drop'
                 verbose: false
-                publishEndpoint: '@npm'
+                publishEndpoint: 'npm'
               condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
 
             - task: GitHubRelease@0
