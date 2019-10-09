@@ -55,16 +55,16 @@ describe('FluentBuilder', () => {
     const builder = createBuilder(schema);
     const before = builder.instance();
 
-    expect(before.arr).toEqual(arr);
-    expect(before.obj).toEqual(obj);
+    expect(before.arr).toBe(arr);
+    expect(before.obj).toBe(obj);
 
     arr.push(3);
     obj.valOpt = 2;
 
     const after = builder.instance();
 
-    expect(after.arr).toEqual(arr);
-    expect(after.obj).toEqual(obj);
+    expect(after.arr).toBe(arr);
+    expect(after.obj).toBe(obj);
   });
 
   it('can track jest function calls on the instance', () => {
@@ -111,6 +111,40 @@ describe('FluentBuilder', () => {
     expect(resetInstance).toEqual(expectedInitial);
   });
 
+  it('can reset and mutate freely', () => {
+    const builder = createBuilder(schema);
+
+    let numOpt = 1;
+    let str = 'test 1';
+    const func = jest.fn();
+
+    const instance = builder
+      .mutate(set =>
+        set
+          .numOpt(numOpt)
+          .str(str)
+          .func(func)
+      )
+      .instance();
+
+    expect(instance.numOpt).toEqual(numOpt);
+    expect(instance.str).toEqual(str);
+    expect(instance.func).toBe(func);
+
+    const resetInstance = builder.reset().instance();
+    expect(resetInstance).toEqual(expectedInitial);
+
+    numOpt = 3;
+    str = 'test';
+    const rebuiltInstance = builder
+      .mutate(set => set.numOpt(numOpt).str(str))
+      .instance();
+    expect(rebuiltInstance.numOpt).toEqual(numOpt);
+    expect(rebuiltInstance.str).toEqual(str);
+    expect(rebuiltInstance.func).toBe(expectedInitial.func);
+    expect(rebuiltInstance.func).not.toBe(func);
+  });
+
   it('should define all mutator properties', () => {
     const builder = createBuilder(schema);
 
@@ -119,6 +153,20 @@ describe('FluentBuilder', () => {
         expect((set as any)[key]).toBeDefined();
       }
     });
+  });
+
+  it('should not update instance if builder is mutated after being created', () => {
+    const builder = createBuilder(schema);
+    const before = builder.instance();
+
+    expect(before.num).toEqual(num);
+    const updatedNum = num + 1;
+    builder.mutate(set => set.num(updatedNum));
+
+    const after = builder.instance();
+
+    expect(before.num).toEqual(num);
+    expect(after.num).toEqual(updatedNum);
   });
 
   it('can mutate an optional property that was initialized as undefined', () => {

@@ -1,9 +1,11 @@
 import {IsOptional} from 'prop-types';
 
-export type Initial<T> = () => T;
+export type Entry<T> = () => T;
 
-export type Schema<T> = {
-  +readonly [K in keyof T]-?: Initial<T[K]>;
+export type Schema<T> = Readonly<InternalSchema<T>>;
+
+type InternalSchema<T> = {
+  [K in keyof T]-?: Entry<T[K]>;
 };
 
 const fromSchema = <T>(schema: Schema<T>): T => {
@@ -26,20 +28,22 @@ type Mutate<T, K extends keyof T> = IsOptional<T[K]> extends true
   ? (value?: T[K]) => Mutator<T>
   : (value: T[K]) => Mutator<T>;
 
+export const init = <T>(value: T): Entry<T> => () => value;
+
 export class FluentBuilder<T extends object> {
   private readonly mutator: Mutator<T>;
   private readonly schema: Schema<T>;
-  private internalInstance: T;
+  private internalSchema: InternalSchema<T>;
 
   public constructor(schema: Schema<T>) {
     this.schema = schema;
-    this.internalInstance = fromSchema<T>(schema);
+    this.internalSchema = {...schema};
     this.mutator = {} as any;
 
-    for (const key in this.internalInstance) {
-      if (this.internalInstance.hasOwnProperty(key)) {
+    for (const key in this.internalSchema) {
+      if (this.internalSchema.hasOwnProperty(key)) {
         this.mutator[key] = ((v: T[typeof key]) => {
-          this.internalInstance[key] = v;
+          this.internalSchema[key] = init(v);
 
           return this.mutator;
         }) as Mutate<T, typeof key>;
@@ -54,15 +58,13 @@ export class FluentBuilder<T extends object> {
   };
 
   public reset = (): FluentBuilder<T> => {
-    this.internalInstance = fromSchema<T>(this.schema);
+    this.internalSchema = {...this.schema};
 
     return this;
   };
 
-  public instance = (): T => this.internalInstance;
+  public instance = (): T => fromSchema<T>(this.internalSchema);
 }
-
-export const init = <T>(value: T): Initial<T> => () => value;
 
 export const createBuilder = <T extends object>(
   schema: Schema<T>

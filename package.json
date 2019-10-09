@@ -1,6 +1,6 @@
 {
   "name": "@develohpanda/fluent-builder",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A typed, fluent builder for creating objects in Typescript",
   "repository": "https://github.com/develohpanda/fluent-builder",
   "author": "Opender Singh <opender94@gmail.com>",
