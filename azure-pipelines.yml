@@ -1,0 +1,63 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  - master
+
+pool:
+  name: Default
+
+steps:
+  - checkout: self
+    clean: true
+
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.11.1'
+
+  - script: yarn install
+    displayName: 'Install packages'
+
+  - script: yarn build
+    displayName: 'Lint & compile'
+
+  - script: yarn test:ci
+    displayName: 'Unit tests'
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/junit.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    inputs:
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+      failIfCoverageEmpty: true
+
+  - task: CopyFiles@2
+    inputs:
+      Contents: 'package.json'
+      TargetFolder: 'dist'
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'build'
+      Contents: '**'
+      TargetFolder: 'dist/src'
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'dist'
+      Contents: '**'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+  - task: PublishPipelineArtifact@0
+    inputs:
+      artifactName: 'drop'
+      targetPath: '$(Build.ArtifactStagingDirectory)'
