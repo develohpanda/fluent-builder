@@ -59,10 +59,10 @@ stages:
             TargetFolder: 'artifact/src'
 
         - publish: '$(System.DefaultWorkingDirectory)/.pipelines'
-            artifact: 'pipelines'
+          artifact: 'pipelines'
 
         - publish: '$(System.DefaultWorkingDirectory)/artifact'
-            artifact: 'npm'
+          artifact: 'npm'
 
     - deployment: Publish
       displayName: 'Publish'
