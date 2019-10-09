@@ -58,16 +58,11 @@ stages:
             Contents: '**'
             TargetFolder: 'artifact/src'
 
-        - task: CopyFiles@2
-          inputs:
-            SourceFolder: 'artifact'
-            Contents: '**'
-            TargetFolder: '$(Build.ArtifactStagingDirectory)'
+        - publish: '$(System.DefaultWorkingDirectory)/.pipelines'
+            artifact: 'pipelines'
 
-        - task: PublishPipelineArtifact@0
-          inputs:
-            artifactName: 'drop'
-            targetPath: '$(Build.ArtifactStagingDirectory)'
+        - publish: '$(System.DefaultWorkingDirectory)/artifact'
+            artifact: 'npm'
 
     - deployment: Publish
       displayName: 'Publish'
@@ -78,8 +73,8 @@ stages:
         runOnce:
           deploy:
             steps:
-            - bash: '.pipelines/pullPackageVersion.sh'
-              workingDir: '$(System.SourcesDirectory)'
+            - bash: 'pullPackageVersion.sh'
+              workingDir: '$(Pipeline.Workspace)/pipelines'
               failOnStderr: true
               displayName: 'Pull package version'
               
@@ -87,7 +82,7 @@ stages:
               displayName: 'npm publish'
               inputs:
                 command: publish
-                workingDir: '$(System.ArtifactsDirectory)/drop'
+                workingDir: '$(Pipeline.Workspace)/npm'
                 verbose: false
                 publishEndpoint: 'npm@develohpanda'
               condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
