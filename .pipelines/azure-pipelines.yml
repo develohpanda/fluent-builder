@@ -73,7 +73,7 @@ stages:
       displayName: 'Publish'
       environment: 'npm'
       dependsOn: 'Compile'
-      variables: {packageName: '@develohpanda/fluent-builder'}
+      variables: {packageName: '@develohpanda/fluent-builder', version: '', currentVersion: ''}
       strategy:
         runOnce:
           deploy:
@@ -82,3 +82,22 @@ stages:
               workingDirectory: '$(System.DefaultWorkingDirectory)'
               failOnStderr: true
               displayName: 'Pull package version'
+              
+            - task: Npm@1
+              displayName: 'npm publish'
+              inputs:
+                command: publish
+                workingDir: '$(System.DefaultWorkingDirectory)/_develohpanda.$(packageName)/drop'
+                verbose: false
+                publishEndpoint: '@npm'
+              condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
+
+            - task: GitHubRelease@0
+              displayName: 'GitHub release (create)'
+              inputs:
+                gitHubConnection: 'develohpanda'
+                tagSource: manual
+                tag: 'v$(version)'
+                title: 'v$(version)'
+                releaseNotesSource: input
+              condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
