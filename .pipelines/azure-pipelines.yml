@@ -89,13 +89,13 @@ stages:
                 command: publish
                 workingDir: '$(System.DefaultWorkingDirectory)/_develohpanda.$(packageName)/drop'
                 verbose: false
-                publishEndpoint: 'npm'
+                publishEndpoint: 'npm@develohpanda'
               condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
 
             - task: GitHubRelease@0
-              displayName: 'GitHub release (create)'
+              displayName: 'Create GitHub Release'
               inputs:
-                gitHubConnection: 'develohpanda'
+                gitHubConnection: 'github@develohpanda'
                 tagSource: manual
                 tag: 'v$(version)'
                 title: 'v$(version)'
