@@ -80,8 +80,7 @@ stages:
               
               echo \"Package name: $(packageName)\"
               echo \"Current: $currentVersion\"
-              echo \"New: $newVersion\""
-              
+              echo \"New: $newVersion\""              
               workingDirectory: '$(System.DefaultWorkingDirectory)/_MyFoodBag.myfoodbag.$(packageName)/drop'
               failOnStderr: true
               displayName: 'Pull package version'
