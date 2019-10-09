@@ -73,8 +73,7 @@ stages:
         runOnce:
           deploy:
             steps:
-            - bash: 'pullPackageVersion.sh'
-              workingDir: '$(Pipeline.Workspace)/pipelines'
+            - bash: 'pipelines/pullPackageVersion.sh'
               failOnStderr: true
               displayName: 'Pull package version'
               
@@ -82,7 +81,7 @@ stages:
               displayName: 'npm publish'
               inputs:
                 command: publish
-                workingDir: '$(Pipeline.Workspace)/npm'
+                workingDir: 'npm'
                 verbose: false
                 publishEndpoint: 'npm@develohpanda'
               condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
