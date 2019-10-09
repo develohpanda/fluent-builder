@@ -86,7 +86,6 @@ stages:
     - deployment: Publish
       displayName: Publish
       environment: 'npm'
-      dependsOn: 'Build'
       strategy:
         runOnce:
           deploy:
