@@ -9,88 +9,89 @@ pr:
     include:
       - '*'
 
-- job: Compile
-  steps:
-    - checkout: self
-      clean: true
+jobs:
+  - job: Compile
+    steps:
+      - checkout: self
+        clean: true
 
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '8.11.1'
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '8.11.1'
 
-    - script: yarn install
-      displayName: 'Install packages'
+      - script: yarn install
+        displayName: 'Install packages'
 
-    - script: yarn lint
-      displayName: 'Lint'
+      - script: yarn lint
+        displayName: 'Lint'
+  
+      - script: yarn test:ci
+        displayName: 'Run unit tests'
 
-    - script: yarn test:ci
-      displayName: 'Run unit tests'
+      - task: PublishTestResults@2
+        condition: succeededOrFailed()
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: '**/junit.xml'
+          failTaskOnFailedTests: true
 
-    - task: PublishTestResults@2
-      condition: succeededOrFailed()
-      inputs:
-        testResultsFormat: 'JUnit'
-        testResultsFiles: '**/junit.xml'
-        failTaskOnFailedTests: true
+      - task: PublishCodeCoverageResults@1
+        condition: succeededOrFailed()
+        inputs:
+          codeCoverageTool: 'Cobertura'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+          failIfCoverageEmpty: true
 
-    - task: PublishCodeCoverageResults@1
-      condition: succeededOrFailed()
-      inputs:
-        codeCoverageTool: 'Cobertura'
-        summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-        failIfCoverageEmpty: true
+      - script: yarn compile
+        displayName: 'Compile'
 
-    - script: yarn compile
-      displayName: 'Compile'
+      - task: CopyFiles@2
+        inputs:
+          Contents: 'package.json'
+          TargetFolder: 'artifact'
 
-    - task: CopyFiles@2
-      inputs:
-        Contents: 'package.json'
-        TargetFolder: 'artifact'
+      - task: CopyFiles@2
+        inputs:
+          SourceFolder: 'dist/src'
+          Contents: '**'
+          TargetFolder: 'artifact/src'
 
-    - task: CopyFiles@2
-      inputs:
-        SourceFolder: 'dist/src'
-        Contents: '**'
-        TargetFolder: 'artifact/src'
+      - publish: '$(System.DefaultWorkingDirectory)/.pipelines'
+        artifact: 'pipelines'
 
-    - publish: '$(System.DefaultWorkingDirectory)/.pipelines'
-      artifact: 'pipelines'
+      - publish: '$(System.DefaultWorkingDirectory)/artifact'
+        artifact: 'npm'
 
-    - publish: '$(System.DefaultWorkingDirectory)/artifact'
-      artifact: 'npm'
+  - deployment: Publish
+    displayName: 'Publish'
+    environment: 'npm'
+    dependsOn: 'Compile'
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
+    variables: {packageName: '@develohpanda/fluent-builder', version: '', currentVersion: ''}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - bash: 'chmod +x pipelines/pullPackageVersion.sh'
+            failOnStderr: true
+            workingDirectory: '$(Pipeline.Workspace)'
+            displayName: 'Pull package version'
+            
+          - task: Npm@1
+            displayName: 'npm publish'
+            inputs:
+              command: publish
+              workingDir: '$(Pipeline.Workspace)/npm'
+              verbose: false
+              publishEndpoint: 'npm@develohpanda'
+            condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
 
-- deployment: Publish
-  displayName: 'Publish'
-  environment: 'npm'
-  dependsOn: 'Compile'
-  condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
-  variables: {packageName: '@develohpanda/fluent-builder', version: '', currentVersion: ''}
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - bash: 'chmod +x pipelines/pullPackageVersion.sh'
-          failOnStderr: true
-          workingDirectory: '$(Pipeline.Workspace)'
-          displayName: 'Pull package version'
-          
-        - task: Npm@1
-          displayName: 'npm publish'
-          inputs:
-            command: publish
-            workingDir: '$(Pipeline.Workspace)/npm'
-            verbose: false
-            publishEndpoint: 'npm@develohpanda'
-          condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
-
-        - task: GitHubRelease@0
-          displayName: 'Create GitHub Release'
-          inputs:
-            gitHubConnection: 'github@develohpanda'
-            tagSource: manual
-            tag: 'v$(version)'
-            title: 'v$(version)'
-            releaseNotesSource: input
-          condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
+          - task: GitHubRelease@0
+            displayName: 'Create GitHub Release'
+            inputs:
+              gitHubConnection: 'github@develohpanda'
+              tagSource: manual
+              tag: 'v$(version)'
+              title: 'v$(version)'
+              releaseNotesSource: input
+            condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
