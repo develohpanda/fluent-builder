@@ -6,9 +6,6 @@
 trigger:
   - master
 
-pool:
-  name: Default
-
 steps:
   - checkout: self
     clean: true
