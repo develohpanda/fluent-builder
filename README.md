@@ -23,6 +23,10 @@ yarn add -D @develohpanda/fluent-builder
 npm i --save-dev @develohpanda/fluent-builder
 ```
 
+### Gotcha!
+
+In order for types to be detected correctly in VS Code (eg. IntelliSense on hover), any file using `fluent-builder` should be included in the default project `tsconfig` to be compiled. If you know how to fix this, please submit a PR! :)
+
 ## Usage
 
 #### Define your interface / type
@@ -74,9 +78,11 @@ describe('suite', () => {
 });
 ```
 
-### Gotcha!
+The overhead of constructing a new builder can be avoided by using the `builder.reset()` method. This resets the mutated schema back to its original, and can be chained.
 
-In order for types to be detected correctly in VS Code (eg. IntelliSense on hover), any file using `fluent-builder` should be included in the default project `tsconfig` to be compiled. If you know how to fix this, please submit a PR! :)
+```ts
+builder.reset().mutate(...).instance();
+```
 
 ## Contributing
 

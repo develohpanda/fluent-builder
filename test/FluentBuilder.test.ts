@@ -155,11 +155,12 @@ describe('FluentBuilder', () => {
     });
   });
 
-  it('should not update instance if builder is mutated after being created', () => {
+  it('should not update a previous instance if the builder is mutated afterards', () => {
     const builder = createBuilder(schema);
     const before = builder.instance();
 
     expect(before.num).toEqual(num);
+
     const updatedNum = num + 1;
     builder.mutate(set => set.num(updatedNum));
 
@@ -180,7 +181,7 @@ describe('FluentBuilder', () => {
     expect(builder.instance().numOpt).toEqual(update);
   });
 
-  it('should mutate instance when calling corresponding mutator function', () => {
+  it('should show mutation on instance after mutator function', () => {
     const builder = createBuilder(schema);
 
     const str = 'test';
