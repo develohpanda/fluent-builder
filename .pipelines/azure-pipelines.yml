@@ -75,7 +75,7 @@ stages:
             steps:
             - bash: 'pullPackageVersion.sh'
               failOnStderr: true
-              workingDirectory: '$(Pipeline.Workspace)/pipelines'
+              workingDirectory: '$(Pipeline.Workspace)'
               displayName: 'Pull package version'
               
             - task: Npm@1
