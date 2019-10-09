@@ -78,7 +78,7 @@ stages:
         runOnce:
           deploy:
             steps:
-            - bash: './.pipelines/pullPackageVersion.sh'
+            - bash: '.pipelines/pullPackageVersion.sh'
               workingDirectory: '$(System.DefaultWorkingDirectory)'
               failOnStderr: true
               displayName: 'Pull package version'
