@@ -68,11 +68,12 @@ jobs:
     displayName: 'Publish'
     environment: 'npm'
     dependsOn: 'Compile'
-    #condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"    
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"    
     strategy:
       runOnce:
         deploy:
           steps:
+            # Ignore the formatting in the following script
           - bash: |
               newVersion=$(cat npm/package.json | grep version | head -1 | awk -F: '{ print $2 }'  | sed 's/[",]//g' | tr -d '[[:space:]]')
               currentVersion=$(npm show $(packageName) version)
