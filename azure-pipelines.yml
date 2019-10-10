@@ -57,6 +57,11 @@ jobs:
 
       - task: CopyFiles@2
         inputs:
+          Contents: 'README.md'
+          TargetFolder: 'npm'
+
+      - task: CopyFiles@2
+        inputs:
           SourceFolder: 'dist/src'
           Contents: '**'
           TargetFolder: 'npm/src'
