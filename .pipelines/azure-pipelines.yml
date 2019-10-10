@@ -9,6 +9,11 @@ pr:
     include:
       - '*'
 
+variables: 
+  packageName: '@develohpanda/fluent-builder'
+  version: ''
+  currentVersion: ''
+
 jobs:
   - job: Compile
     steps:
@@ -66,11 +71,7 @@ jobs:
     displayName: 'Publish'
     environment: 'npm'
     dependsOn: 'Compile'
-    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"
-    variables: 
-      packageName: '@develohpanda/fluent-builder'
-      version: ''
-      currentVersion: ''
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"    
     strategy:
       runOnce:
         deploy:
