@@ -1,14 +1,14 @@
 {
   "name": "@develohpanda/fluent-builder",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A typed, fluent builder for creating objects in Typescript",
   "repository": "https://github.com/develohpanda/fluent-builder",
   "author": "Opender Singh <opender94@gmail.com>",
   "license": "MIT",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
   "files": [
-    "dist/src"
+    "src"
   ],
   "keywords": [
     "typescript",
