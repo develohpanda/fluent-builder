@@ -1,6 +1,6 @@
 # 🥨 fluent-builder 
 ![npm](https://img.shields.io/npm/v/@develohpanda/fluent-builder?logo=npm)
-[![Build Status](https://dev.azure.com/develohpanda/fluent-builder/_apis/build/status/develohpanda.fluent-builder?branchName=master)](https://dev.azure.com/develohpanda/fluent-builder/_build/latest?definitionId=1&branchName=master)
+![Azure DevOps builds](https://img.shields.io/azure-devops/build/develohpanda/5974ee25-e62e-483b-b9aa-c3560b2a7be1/1?label=Azure%20Pipelines&logo=Azure%20Pipelines)
 
 ### Generate a fluent, typed object builder for any interface or type.
 
