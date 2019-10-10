@@ -1,5 +1,6 @@
 # 🥨 fluent-builder 
-[![npm version](https://badge.fury.io/js/%40develohpanda%2Ffluent-builder.svg)](https://badge.fury.io/js/%40develohpanda%2Ffluent-builder) [![CircleCI](https://circleci.com/gh/develohpanda/fluent-builder.svg?style=svg)](https://circleci.com/gh/develohpanda/fluent-builder)
+![npm](https://img.shields.io/npm/v/@develohpanda/fluent-builder?logo=npm)
+[![Build Status](https://dev.azure.com/develohpanda/fluent-builder/_apis/build/status/develohpanda.fluent-builder?branchName=master)](https://dev.azure.com/develohpanda/fluent-builder/_build/latest?definitionId=1&branchName=master)
 
 ### Generate a fluent, typed object builder for any interface or type.
 
