@@ -9,7 +9,7 @@ type InternalSchema<T> = {
 };
 
 const fromSchema = <T>(schema: Schema<T>): T => {
-  const result: T = {} as any;
+  const result: Partial<T> = {};
 
   for (const key in schema) {
     if (schema.hasOwnProperty(key)) {
@@ -17,7 +17,7 @@ const fromSchema = <T>(schema: Schema<T>): T => {
     }
   }
 
-  return result;
+  return result as T;
 };
 
 type Mutator<T> = {
@@ -38,17 +38,19 @@ export class FluentBuilder<T extends object> {
   public constructor(schema: Schema<T>) {
     this.schema = schema;
     this.internalSchema = {...schema};
-    this.mutator = {} as any;
+    const mutator: Partial<Mutator<T>> = {};
 
     for (const key in this.internalSchema) {
       if (this.internalSchema.hasOwnProperty(key)) {
-        this.mutator[key] = ((v: T[typeof key]) => {
+        mutator[key] = ((v: T[typeof key]) => {
           this.internalSchema[key] = init(v);
 
           return this.mutator;
         }) as Mutate<T, typeof key>;
       }
     }
+
+    this.mutator = mutator as Mutator<T>;
   }
 
   public mutate = (func: (mutate: Mutator<T>) => void): FluentBuilder<T> => {
