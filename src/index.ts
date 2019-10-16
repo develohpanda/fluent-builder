@@ -1,11 +1,9 @@
 import {IsOptional} from 'prop-types';
 
-export type Entry<T> = () => T;
-
 export type Schema<T> = Readonly<InternalSchema<T>>;
 
 type InternalSchema<T> = {
-  [K in keyof T]-?: Entry<T[K]>;
+  [K in keyof T]-?: () => T[K];
 };
 
 const fromSchema = <T>(schema: Schema<T>): T => {
@@ -28,8 +26,6 @@ type Mutate<T, K extends keyof T> = IsOptional<T[K]> extends true
   ? (value?: T[K]) => Mutator<T>
   : (value: T[K]) => Mutator<T>;
 
-export const init = <T>(value: T): Entry<T> => () => value;
-
 export class FluentBuilder<T extends object> {
   private readonly mutator: Mutator<T>;
   private readonly schema: Schema<T>;
@@ -43,7 +39,7 @@ export class FluentBuilder<T extends object> {
     for (const key in this.internalSchema) {
       if (this.internalSchema.hasOwnProperty(key)) {
         mutator[key] = ((v: T[typeof key]) => {
-          this.internalSchema[key] = init(v);
+          this.internalSchema[key] = () => v;
 
           return this.mutator;
         }) as Mutate<T, typeof key>;

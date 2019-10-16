@@ -43,13 +43,15 @@ interface Product {
 #### Define a schema
 
 ```ts
-import {Schema, init} from '@develohpanda/fluent-builder';
+import {Schema} from '@develohpanda/fluent-builder';
+
+const buyMock = jest.fn();
 
 const schema: Schema<Product> = {
-  name: init('Shirt'),
-  price: init(2),
-  color: init(undefined),
-  buy: init(jest.fn()),
+  name: () => 'Shirt',
+  price: () => 2),
+  color: () => undefined,
+  buy: () => buyMock,
 }
 ```
 

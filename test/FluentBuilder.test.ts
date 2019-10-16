@@ -1,4 +1,4 @@
-import {createBuilder, init, Schema} from '../src/index';
+import {createBuilder, Schema} from '../src/index';
 
 interface First {
   str?: string;
@@ -34,12 +34,12 @@ const expectedInitial: First = {
 };
 
 const schema: Schema<First> = {
-  str: init(str),
-  num: init(num),
-  numOpt: init(numOpt),
-  obj: init(obj),
-  arr: init(arr),
-  func: init(func),
+  str: () => str,
+  num: () => num,
+  numOpt: () => numOpt,
+  obj: () => obj,
+  arr: () => arr,
+  func: () => func,
 };
 
 describe('FluentBuilder', () => {
