@@ -89,7 +89,7 @@ jobs:
     variables:
       targetVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.targetVersion'] ]
       currentVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.currentVersion'] ]
-    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne($(targetVersion), $(currentVersion)))"
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['targetVersion'], variables['currentVersion']))"
     strategy:
       runOnce:
         deploy:
