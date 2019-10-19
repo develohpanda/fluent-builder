@@ -11,8 +11,6 @@ pr:
 
 variables: 
   packageName: '@develohpanda/fluent-builder'
-  version: ''
-  currentVersion: ''
 
 jobs:
   - job: Compile
@@ -69,22 +67,29 @@ jobs:
       - publish: '$(System.DefaultWorkingDirectory)/npm'
         artifact: 'npm'
 
+  - job: CheckVersion
+    condition: "eq(variables['Build.SourceBranch'], 'refs/heads/master')"
+    steps:
       - bash: |
           newVersion=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }'  | sed 's/[",]//g' | tr -d '[[:space:]]')
           currentVersion=$(npm show $(packageName) version)
-          echo "##vso[task.setvariable variable=version]$newVersion"
-          echo "##vso[task.setvariable variable=currentVersion]$currentVersion"
+          echo "##vso[task.setvariable variable=targetVersion;isOutput=true]$newVersion"
+          echo "##vso[task.setvariable variable=currentVersion;isOutput=true]$currentVersion"
           echo "Package name: $(packageName)"
           echo "Current: $currentVersion"
           echo "New: $newVersion"
         failOnStderr: true
+        name: setVersionStep
         displayName: 'Pull package version'
 
   - deployment: Publish
     displayName: 'Publish'
     environment: 'npm'
     dependsOn: 'Compile'
-    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['version'], variables['currentVersion']))"    
+    variables:
+      targetVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.targetVersion'] ]
+      currentVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.currentVersion'] ]
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne($(targetVersion), $(currentVersion)))"
     strategy:
       runOnce:
         deploy:
@@ -102,6 +107,6 @@ jobs:
             inputs:
               gitHubConnection: 'github@develohpanda'
               tagSource: manual
-              tag: 'v$(version)'
-              title: 'v$(version)'
+              tag: 'v$(targetVersion)'
+              title: 'v$(targetVersion)'
               releaseNotesSource: input
