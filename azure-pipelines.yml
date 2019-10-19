@@ -69,28 +69,27 @@ jobs:
       - publish: '$(System.DefaultWorkingDirectory)/npm'
         artifact: 'npm'
 
+      - bash: |
+          newVersion=$(cat npm/package.json | grep version | head -1 | awk -F: '{ print $2 }'  | sed 's/[",]//g' | tr -d '[[:space:]]')
+          currentVersion=$(npm show $(packageName) version)
+          echo "##vso[task.setvariable variable=version]$newVersion"
+          echo "##vso[task.setvariable variable=currentVersion]$currentVersion"
+          echo "Package name: $(packageName)"
+          echo "Current: $currentVersion"
+          echo "New: $newVersion"
+        failOnStderr: true
+        workingDirectory: '$(Pipeline.Workspace)'
+        displayName: 'Pull package version'
+
   - deployment: Publish
     displayName: 'Publish'
     environment: 'npm'
     dependsOn: 'Compile'
-    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))"    
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['version'], variables['currentVersion']))"    
     strategy:
       runOnce:
         deploy:
           steps:
-            # Ignore the formatting in the following script
-          - bash: |
-              newVersion=$(cat npm/package.json | grep version | head -1 | awk -F: '{ print $2 }'  | sed 's/[",]//g' | tr -d '[[:space:]]')
-              currentVersion=$(npm show $(packageName) version)
-              echo "##vso[task.setvariable variable=version]$newVersion"
-              echo "##vso[task.setvariable variable=currentVersion]$currentVersion"
-              echo "Package name: $(packageName)"
-              echo "Current: $currentVersion"
-              echo "New: $newVersion"
-            failOnStderr: true
-            workingDirectory: '$(Pipeline.Workspace)'
-            displayName: 'Pull package version'
-            
           - task: Npm@1
             displayName: 'npm publish'
             inputs:
@@ -98,7 +97,6 @@ jobs:
               workingDir: '$(Pipeline.Workspace)/npm'
               verbose: false
               publishEndpoint: 'npm@develohpanda'
-            condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
 
           - task: GitHubRelease@0
             displayName: 'Create GitHub Release'
@@ -108,4 +106,3 @@ jobs:
               tag: 'v$(version)'
               title: 'v$(version)'
               releaseNotesSource: input
-            condition: "and(succeeded(), ne(variables['version'], variables['currentVersion']))"
