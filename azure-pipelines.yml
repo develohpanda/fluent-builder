@@ -86,10 +86,7 @@ jobs:
     displayName: 'Publish'
     environment: 'npm'
     dependsOn: ['Compile', 'CheckVersion']
-    variables:
-      targetVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.targetVersion'] ]
-      currentVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.currentVersion'] ]
-    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['targetVersion'], variables['currentVersion']))"
+    condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(dependencies.CheckVersion.outputs['setVersionStep.targetVersion'], dependencies.CheckVersion.outputs['setVersionStep.currentVersion']))"
     strategy:
       runOnce:
         deploy:
