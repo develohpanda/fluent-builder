@@ -85,7 +85,7 @@ jobs:
   - deployment: Publish
     displayName: 'Publish'
     environment: 'npm'
-    dependsOn: 'Compile'
+    dependsOn: ['Compile', 'CheckVersion']
     variables:
       targetVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.targetVersion'] ]
       currentVersion: $[ dependencies.CheckVersion.outputs['setVersionStep.currentVersion'] ]
