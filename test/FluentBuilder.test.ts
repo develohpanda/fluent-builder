@@ -88,7 +88,7 @@ describe('FluentBuilder', () => {
     const mutatedFunc = jest.fn();
 
     const instance = createBuilder(schema)
-      .mutate(s => s.func(mutatedFunc))
+      .func(mutatedFunc)
       .instance();
 
     expect(instance.func).not.toHaveBeenCalled();
@@ -101,7 +101,8 @@ describe('FluentBuilder', () => {
     const builder = createBuilder(schema);
 
     const instance = builder
-      .mutate(set => set.numOpt(5).str('test'))
+      .numOpt(5)
+      .str('test')
       .instance();
 
     expect(instance).not.toEqual(expectedInitial);
@@ -119,12 +120,9 @@ describe('FluentBuilder', () => {
     const func = jest.fn();
 
     const instance = builder
-      .mutate(set =>
-        set
-          .numOpt(numOpt)
-          .str(str)
-          .func(func)
-      )
+      .numOpt(numOpt)
+      .str(str)
+      .func(func)
       .instance();
 
     expect(instance.numOpt).toEqual(numOpt);
@@ -137,7 +135,8 @@ describe('FluentBuilder', () => {
     numOpt = 3;
     str = 'test';
     const rebuiltInstance = builder
-      .mutate(set => set.numOpt(numOpt).str(str))
+      .numOpt(numOpt)
+      .str(str)
       .instance();
     expect(rebuiltInstance.numOpt).toEqual(numOpt);
     expect(rebuiltInstance.str).toEqual(str);
@@ -148,11 +147,9 @@ describe('FluentBuilder', () => {
   it('should define all mutator properties', () => {
     const builder = createBuilder(schema);
 
-    builder.mutate(set => {
-      for (const key in set) {
-        expect((set as any)[key]).toBeDefined();
-      }
-    });
+    for (const key in builder) {
+      expect((builder as any)[key]).toBeDefined();
+    }
   });
 
   it('should not update a previous instance if the builder is mutated afterards', () => {
@@ -162,7 +159,7 @@ describe('FluentBuilder', () => {
     expect(before.num).toEqual(num);
 
     const updatedNum = num + 1;
-    builder.mutate(set => set.num(updatedNum));
+    builder.num(updatedNum);
 
     const after = builder.instance();
 
@@ -176,7 +173,7 @@ describe('FluentBuilder', () => {
     expect(builder.instance().numOpt).toBeUndefined();
 
     const update = 1;
-    builder.mutate(set => set.numOpt(update));
+    builder.numOpt(update);
 
     expect(builder.instance().numOpt).toEqual(update);
   });
@@ -185,7 +182,7 @@ describe('FluentBuilder', () => {
     const builder = createBuilder(schema);
 
     const str = 'test';
-    const instance = builder.mutate(set => set.str(str)).instance();
+    const instance = builder.str(str).instance();
 
     expect(instance.str).toEqual(str);
   });
@@ -195,7 +192,7 @@ describe('FluentBuilder', () => {
     (input: any) => {
       const builder = createBuilder(schema);
 
-      const instance = builder.mutate(set => set.numOpt(input)).instance();
+      const instance = builder.numOpt(input).instance();
 
       expect(instance.numOpt).toEqual(input);
     }
