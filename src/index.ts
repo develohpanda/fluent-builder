@@ -26,12 +26,12 @@ type Mutate<T, K extends keyof T> = IsOptional<T[K]> extends true
   ? (value?: T[K]) => Builder<T>
   : (value: T[K]) => Builder<T>;
 
-interface Modifier<T> {
+interface Operator<T> {
   reset: () => Builder<T>;
-  instance: () => T;
+  build: () => T;
 }
 
-type Builder<T> = Mutator<T> & Modifier<T>;
+type Builder<T> = Mutator<T> & Operator<T>;
 
 export const createBuilder = <T extends object>(
   schema: Schema<T>
@@ -50,7 +50,7 @@ export const createBuilder = <T extends object>(
   }
 
   const builder = mutator as Builder<T>;
-  builder.instance = () => fromSchema<T>(internalSchema);
+  builder.build = () => fromSchema<T>(internalSchema);
   builder.reset = () => {
     for (const key in schema) {
       if (schema.hasOwnProperty(key)) {

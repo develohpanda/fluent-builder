@@ -4,10 +4,10 @@
 
 ### Generate a fluent, typed object builder for any interface or type.
 
-`fluent-builder` consumes a seeding schema, and generates a `mutator` with a signature identical to the type being built, but with `mutate` functions, to make iterative modifications to your object.
+`fluent-builder` consumes a seeding schema, and generates a builder with a signature identical to the type being built, but with `mutate` functions, to make iterative modifications to your object. The builder contains two additional properties, `reset()` and `build()`.
 
 ```ts
-createBuilder<Person>(schema).mutate(set => set.name('Bob').age(42)).instance();
+createBuilder<Product>(schema).name('Shirt').price(42).build();
 ```
 
 ## Why?
@@ -68,15 +68,10 @@ describe('suite', () => {
   beforeEach(() => builder.reset());
 
   it('test', () => {
-    builder.mutate(set =>
-      set
-        .price(4)
-        .buy(jest.fn(() => console.log('here lol 1234')))
-    );
+    const mock = jest.fn();
+    const instance = builder.price(4).buy(mock).build();
 
-    const instance = builder.instance();
-
-    // use instance
+    // use instance and mock
   });
 });
 ```
@@ -84,7 +79,7 @@ describe('suite', () => {
 The overhead of constructing a new builder can be avoided by using the `builder.reset()` method. This resets the mutated schema back to its original, and can be chained.
 
 ```ts
-builder.reset().mutate(...).instance();
+builder.reset().price(5).build();
 ```
 
 ## Contributing
