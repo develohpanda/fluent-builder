@@ -23,19 +23,19 @@ type Mutator<T> = {
 };
 
 type Mutate<T, K extends keyof T> = IsOptional<T[K]> extends true
-  ? (value?: T[K]) => Builder<T>
-  : (value: T[K]) => Builder<T>;
+  ? (value?: T[K]) => FluentBuilder<T>
+  : (value: T[K]) => FluentBuilder<T>;
 
-interface Operator<T> {
-  reset: () => Builder<T>;
+interface Builder<T> {
+  reset: () => FluentBuilder<T>;
   build: () => T;
 }
 
-type Builder<T> = Mutator<T> & Operator<T>;
+export type FluentBuilder<T> = Builder<T> & Mutator<T>;
 
 export const createBuilder = <T extends object>(
   schema: Schema<T>
-): Builder<T> => {
+): FluentBuilder<T> => {
   const internalSchema: InternalSchema<T> = {...schema};
   const mutator: Partial<Mutator<T>> = {};
 
@@ -44,12 +44,12 @@ export const createBuilder = <T extends object>(
       mutator[key] = ((v: T[typeof key]) => {
         internalSchema[key] = () => v;
 
-        return mutator as Builder<T>;
+        return mutator as FluentBuilder<T>;
       }) as Mutate<T, typeof key>;
     }
   }
 
-  const builder = mutator as Builder<T>;
+  const builder = mutator as FluentBuilder<T>;
   builder.build = () => fromSchema<T>(internalSchema);
   builder.reset = () => {
     for (const key in schema) {
