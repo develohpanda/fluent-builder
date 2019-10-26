@@ -138,6 +138,7 @@ describe('FluentBuilder', () => {
       .numOpt(numOpt)
       .str(str)
       .build();
+
     expect(rebuiltInstance.numOpt).toEqual(numOpt);
     expect(rebuiltInstance.str).toEqual(str);
     expect(rebuiltInstance.func).toBe(expectedInitial.func);
