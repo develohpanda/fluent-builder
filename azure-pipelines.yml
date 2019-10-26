@@ -87,7 +87,7 @@ jobs:
     environment: 'npm'
     dependsOn: ['Compile', 'CheckVersion']
     variables:
-      targetVersion: dependencies.CheckVersion.outputs['setVersionStep.targetVersion']
+      targetVersion: $[dependencies.CheckVersion.outputs['setVersionStep.targetVersion']]
     condition: "and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), ne(dependencies.CheckVersion.outputs['setVersionStep.targetVersion'], dependencies.CheckVersion.outputs['setVersionStep.currentVersion']))"
     strategy:
       runOnce:
