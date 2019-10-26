@@ -47,7 +47,7 @@ import {Schema} from '@develohpanda/fluent-builder';
 
 const schema: Schema<Product> = {
   name: () => 'Shirt',
-  price: () => 2),
+  price: () => 2,
   color: () => undefined,
   buy: () => jest.fn(),
 }
