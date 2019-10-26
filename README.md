@@ -45,13 +45,11 @@ interface Product {
 ```ts
 import {Schema} from '@develohpanda/fluent-builder';
 
-const buyMock = jest.fn();
-
 const schema: Schema<Product> = {
   name: () => 'Shirt',
   price: () => 2),
   color: () => undefined,
-  buy: () => buyMock,
+  buy: () => jest.fn(),
 }
 ```
 
