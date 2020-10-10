@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable no-prototype-builtins */
-import {IsOptional} from 'prop-types';
+type IsOptional<T> = undefined extends T ? true : false;
 
 export type Schema<T> = Readonly<InternalSchema<T>>;
 
