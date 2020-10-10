@@ -30,10 +30,11 @@
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/array-type": [
       "warn",
-      "generic"
+      {
+        "default": "generic"
+      }
     ],
     "@typescript-eslint/no-explicit-any": "off",
-    "react/prop-types": "off",
     "import/prefer-default-export": "off",
     "no-undef": "off",
     "no-unused-expressions": [

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable no-prototype-builtins */
 import {IsOptional} from 'prop-types';
 
 export type Schema<T> = Readonly<InternalSchema<T>>;

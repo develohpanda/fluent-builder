@@ -87,9 +87,7 @@ describe('FluentBuilder', () => {
   it('can track mutated function calls', () => {
     const mutatedFunc = jest.fn();
 
-    const instance = createBuilder(schema)
-      .func(mutatedFunc)
-      .build();
+    const instance = createBuilder(schema).func(mutatedFunc).build();
 
     expect(instance.func).not.toHaveBeenCalled();
     mutatedFunc();
@@ -100,10 +98,7 @@ describe('FluentBuilder', () => {
   it('can reset back to initial', () => {
     const builder = createBuilder(schema);
 
-    const instance = builder
-      .numOpt(5)
-      .str('test')
-      .build();
+    const instance = builder.numOpt(5).str('test').build();
 
     expect(instance).not.toEqual(expectedInitial);
 
@@ -119,11 +114,7 @@ describe('FluentBuilder', () => {
     let str = 'test 1';
     const func = jest.fn();
 
-    const instance = builder
-      .numOpt(numOpt)
-      .str(str)
-      .func(func)
-      .build();
+    const instance = builder.numOpt(numOpt).str(str).func(func).build();
 
     expect(instance.numOpt).toEqual(numOpt);
     expect(instance.str).toEqual(str);
@@ -134,10 +125,7 @@ describe('FluentBuilder', () => {
 
     numOpt = 3;
     str = 'test';
-    const rebuiltInstance = builder
-      .numOpt(numOpt)
-      .str(str)
-      .build();
+    const rebuiltInstance = builder.numOpt(numOpt).str(str).build();
 
     expect(rebuiltInstance.numOpt).toEqual(numOpt);
     expect(rebuiltInstance.str).toEqual(str);

@@ -1,14 +1,14 @@
 {
   "name": "@develohpanda/fluent-builder",
-  "version": "2.0.2",
+  "version": "0.0.0-development",
   "description": "A typed, fluent builder for creating objects in Typescript",
   "repository": "https://github.com/develohpanda/fluent-builder",
   "author": "Opender Singh <opender94@gmail.com>",
   "license": "MIT",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "files": [
-    "src"
+    "dist"
   ],
   "keywords": [
     "typescript",
@@ -20,43 +20,44 @@
     "test": "jest",
     "test:cover": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:ci": "jest --ci --reporters=jest-junit --coverage --coverageReporters=cobertura",
-    "compile": "tsc",
-    "lint": "eslint {src,test}/**/* --ext .{{t,j}s{,x}}",
+    "test:ci": "jest --ci --coverage",
+    "compile": "tsc -p tsconfig.build.json",
+    "lint": "eslint **/*.{t,j}s",
     "lint:fix": "yarn lint --fix",
-    "local-pack": "rimraf ./*.tgz && yarn lint && yarn compile && yarn pack"
+    "semantic-release": "semantic-release"
   },
   "lint-staged": {
-    "*.{{t,j}s{,x}}": [
-      "eslint --fix",
-      "git add"
+    "*.{{t,j}s}": [
+      "eslint --fix"
     ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "devDependencies": {
-    "@types/jest": "26.0.8",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "@types/jest": "26.0.14",
     "@types/prop-types": "^15.7.3",
-    "@typescript-eslint/eslint-plugin": "1.13.0",
-    "@typescript-eslint/parser": "1.13.0",
-    "eslint": "^5.0.0",
-    "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-import": "2.22.0",
-    "eslint-plugin-jest": "23.20.0",
-    "eslint-plugin-prettier": "3.1.2",
+    "@typescript-eslint/eslint-plugin": "4.4.0",
+    "@typescript-eslint/parser": "4.4.0",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "6.12.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jest": "24.1.0",
+    "eslint-plugin-prettier": "3.1.4",
     "eslint-plugin-simple-import-sort": "5.0.3",
-    "husky": "4.2.5",
-    "jest": "24.9.0",
-    "jest-junit": "^10.0.0",
-    "lint-staged": "8.2.1",
-    "prettier": "1.19.1",
+    "husky": "4.3.0",
+    "jest": "26.5.2",
+    "lint-staged": "10.4.0",
+    "prettier": "2.1.2",
     "prop-types": "15.7.2",
-    "rimraf": "3.0.2",
-    "ts-jest": "24.3.0",
-    "typescript": "^3.5.3"
+    "semantic-release": "^17.1.2",
+    "ts-jest": "26.4.1",
+    "typescript": "4.0.3"
   },
   "peerDependencies": {
     "prop-types": ">=15.7.2"

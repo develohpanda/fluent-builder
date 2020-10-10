@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "target": "es5",
+    "lib": [
+      "es2015"
+    ],
+    "sourceMap": true,
+    "allowJs": false,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "node_modules",
+    "jest.config.js",
+    "commitlint.config.js"
+  ]
+}
