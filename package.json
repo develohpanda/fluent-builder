@@ -5,10 +5,10 @@
   "repository": "https://github.com/develohpanda/fluent-builder",
   "author": "Opender Singh <opender94@gmail.com>",
   "license": "MIT",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "files": [
-    "src"
+    "dist"
   ],
   "keywords": [
     "typescript",
@@ -20,24 +20,26 @@
     "test": "jest",
     "test:cover": "jest --coverage",
     "test:watch": "jest --watch",
-    "test:ci": "jest --ci --reporters=jest-junit --coverage --coverageReporters=cobertura",
+    "test:ci": "jest --ci --coverage",
     "compile": "tsc",
-    "lint": "eslint {src,test}/**/* --ext .{{t,j}s{,x}}",
+    "lint": "eslint **/*.{t,j}s",
     "lint:fix": "yarn lint --fix",
-    "local-pack": "rimraf ./*.tgz && yarn lint && yarn compile && yarn pack"
+    "semantic-release": "semantic-release"
   },
   "lint-staged": {
-    "*.{{t,j}s{,x}}": [
-      "eslint --fix",
-      "git add"
+    "*.{{t,j}s}": [
+      "eslint --fix"
     ]
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "devDependencies": {
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
     "@types/jest": "24.0.24",
     "@types/prop-types": "^15.7.3",
     "@typescript-eslint/eslint-plugin": "1.13.0",
@@ -50,11 +52,10 @@
     "eslint-plugin-simple-import-sort": "5.0.0",
     "husky": "3.1.0",
     "jest": "24.9.0",
-    "jest-junit": "^10.0.0",
     "lint-staged": "8.2.1",
     "prettier": "1.19.1",
     "prop-types": "15.7.2",
-    "rimraf": "3.0.0",
+    "semantic-release": "^17.1.2",
     "ts-jest": "24.2.0",
     "typescript": "^3.5.3"
   },

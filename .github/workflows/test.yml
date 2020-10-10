@@ -1,0 +1,19 @@
+name: Test
+on: [pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [10, 12]
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --version
+      - run: yarn install
+      - run: yarn lint
+      - run: yarn test:ci
+      - run: yarn compile
