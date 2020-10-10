@@ -21,7 +21,7 @@
     "test:cover": "jest --coverage",
     "test:watch": "jest --watch",
     "test:ci": "jest --ci --coverage",
-    "compile": "tsc",
+    "compile": "tsc -p tsconfig.build.json",
     "lint": "eslint **/*.{t,j}s",
     "lint:fix": "yarn lint --fix",
     "semantic-release": "semantic-release"
