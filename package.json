@@ -5,8 +5,8 @@
   "repository": "https://github.com/develohpanda/fluent-builder",
   "author": "Opender Singh <opender94@gmail.com>",
   "license": "MIT",
-  "main": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
